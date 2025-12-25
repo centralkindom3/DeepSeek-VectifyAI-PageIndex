@@ -1,0 +1,22 @@
+[
+  {
+    "message": "{'total_page_number': 12}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T08:02:16.920000"
+  },
+  {
+    "message": "{'total_token': 74351}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T08:02:16.956000"
+  },
+  {
+    "message": "{'toc_content': None, 'toc_page_list': [], 'page_index_given_in_toc': 'no'}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T08:02:44.718000"
+  },
+  {
+    "message": "len(group_texts): 3",
+    "level": "INFO",
+    "timestamp": "2025-12-25T08:02:44.750000"
+  }
+]

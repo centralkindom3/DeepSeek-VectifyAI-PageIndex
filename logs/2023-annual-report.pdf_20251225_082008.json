@@ -1,0 +1,17 @@
+[
+  {
+    "message": "{'total_page_number': 222}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T08:20:14.894000"
+  },
+  {
+    "message": "{'total_token': 545450}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T08:20:14.903000"
+  },
+  {
+    "message": "{'toc_content': 'Contents\\nAbout the F ederal Reser ve:  iii\\n1Overview:  1\\n2Monetar y Policy and Economic De velopments :  3\\nMarch 2024 Summar y:  3\\nJune 2023 Summar y:  9\\n3Financial Stability :  15\\nMonitoring F inancial V ulnerabilities :  16\\nDomestic and Inter national Cooperation and Coordination :  22\\n4Super vision and Regulation :  25\\nSuper vised and Regulated Institutions :  26\\nSuper visory Developments :  29\\nRegulator y Developments :  49\\n5Payment System and Reser ve Bank Over sight :  53\\nPayment Ser vices to Depositor y and Other Institutions :  54\\nCurrency and Coin :  60\\nFiscal Agency and Go vernment Depositor y Ser vices :  63\\nEvolutions and Impro vements to the System :  66\\nOversight of F ederal Reser ve Banks :  69\\nPro Forma Financial Statements for F ederal Reser ve Priced Ser vices :  76\\n6Consumer and Community Affair s:  83\\nConsumer Compliance Super vision :  83\\nConsumer La ws and Regulations :  95\\nConsumer Research and Analysis of Emerging Issues and P olicy:  96\\nCommunity De velopment :  99\\nAppendixes\\nAFederal Reser ve System Organization :  103\\nBoard of Go vernors:  103\\nFederal Open Mar ket Committee :  111\\nBoard of Go vernors Advisor y Councils :  113\\nFederal Reser ve Banks and Branches :  117\\nBMinutes of F ederal Open Mar ket Committee Meetings :  141\\nMeeting Minutes :  141\\nCFederal Reser ve System Audits :  143\\nOffice of Inspector General Activities :  143\\nGovernment Accountability Office Re views:  145\\nDFederal Reser ve System Budgets :  147\\nSystem Budgets Over view:  147iBoard of Go vernors Budgets :  151\\nFederal Reser ve Banks Budgets :  157\\nCurrency Budget :  163\\nERecord of P olicy Actions of the Board of Go vernors:  169\\nRules and Regulations :  169\\nPolicy Statements and Other Actions :  171\\nDiscount Rates for Depositor y Institutions in 2023 :  175\\nThe Board of Go vernors and the Go vernment P erformance and Results Act :  178\\nFLitigation :  179\\nPending :  179\\nResolved :  180\\nGStatistical T ables :  181ii 110th Annual Repor t | 2023', 'toc_page_list': [2, 3], 'page_index_given_in_toc': 'yes'}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T08:20:44.548000"
+  }
+]

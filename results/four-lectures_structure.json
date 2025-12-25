@@ -1,0 +1,98 @@
+{
+  "doc_name": "four-lectures.pdf",
+  "structure": [
+    {
+      "title": "Four Lectures on Standard ML",
+      "start_index": 1,
+      "end_index": 0,
+      "nodes": [
+        {
+          "title": "Introduction to ML",
+          "start_index": 1,
+          "end_index": -1,
+          "nodes": [],
+          "node_id": "0001"
+        },
+        {
+          "title": "Use of ML Modules in Large Programs",
+          "start_index": 0,
+          "end_index": 19,
+          "nodes": [],
+          "node_id": "0002"
+        },
+        {
+          "title": "Static Semantics of ML Modules",
+          "start_index": 20,
+          "end_index": -1,
+          "nodes": [],
+          "node_id": "0003"
+        },
+        {
+          "title": "One Day Project",
+          "start_index": 0,
+          "end_index": 29,
+          "nodes": [],
+          "node_id": "0004"
+        }
+      ],
+      "node_id": "0000"
+    },
+    {
+      "title": "Implementing an Interpreter in ML",
+      "start_index": 30,
+      "end_index": 32,
+      "nodes": [
+        {
+          "title": "VERSION 1: The bare Typechecker (Appendix A)",
+          "start_index": 32,
+          "end_index": 32,
+          "nodes": [],
+          "node_id": "0006"
+        },
+        {
+          "title": "VERSION 2: Adding lists and polymorphism",
+          "start_index": 33,
+          "end_index": 36,
+          "nodes": [],
+          "node_id": "0007"
+        },
+        {
+          "title": "VERSION 3: A different implementation of types",
+          "start_index": 37,
+          "end_index": 38,
+          "nodes": [],
+          "node_id": "0008"
+        },
+        {
+          "title": "VERSION 4: Introducing variables and let",
+          "start_index": 39,
+          "end_index": 42,
+          "nodes": [],
+          "node_id": "0009"
+        },
+        {
+          "title": "Acknowledgement",
+          "start_index": 43,
+          "end_index": 43,
+          "nodes": [],
+          "node_id": "0010"
+        },
+        {
+          "title": "Appendix A: The bare Interpreter",
+          "start_index": 44,
+          "end_index": 52,
+          "nodes": [],
+          "node_id": "0011"
+        },
+        {
+          "title": "Appendix B: Files",
+          "start_index": 53,
+          "end_index": 53,
+          "nodes": [],
+          "node_id": "0012"
+        }
+      ],
+      "node_id": "0005"
+    }
+  ]
+}

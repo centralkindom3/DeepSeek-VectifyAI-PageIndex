@@ -1,0 +1,142 @@
+[
+  {
+    "message": "{'total_page_number': 3}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:49:36.319000"
+  },
+  {
+    "message": "{'total_token': 7088}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:49:36.334000"
+  },
+  {
+    "message": "{'toc_content': None, 'toc_page_list': [], 'page_index_given_in_toc': 'no'}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:50:04.269000"
+  },
+  {
+    "message": "len(group_texts): 1",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:50:04.287000"
+  },
+  {
+    "message": "generate_toc: [{'structure': '1', 'title': 'The Light That Never Faded: A Story of Thomas Edison', 'physical_index': '<physical_index_1>'}, {'structure': '1.1', 'title': 'Young Tom didn’t learn like other children.', 'physical_index': '<physical_index_1>'}, {'structure': '1.2', 'title': 'By age ten, he had built his first laboratory in the basement.', 'physical_index': '<physical_index_1>'}, {'structure': '1.3', 'title': 'As a young man, Edison moved to Boston, then New York, working as a telegraph operator.', 'physical_index': '<physical_index_1>'}, {'structure': '1.4', 'title': 'But his true ambition lay elsewhere.', 'physical_index': '<physical_index_1>'}, {'structure': '1.5', 'title': 'He moved to Menlo Park, New Jersey, and built what the world would soon call “the invention factory”.', 'physical_index': '<physical_index_2>'}, {'structure': '1.6', 'title': 'Then, on October 21, 1879, everything changed.', 'physical_index': '<physical_index_2>'}, {'structure': '1.7', 'title': 'On December 31, 1879, Edison lit up Menlo Park.', 'physical_index': '<physical_index_2>'}, {'structure': '1.8', 'title': 'His success didn’t stop at the lightbulb.', 'physical_index': '<physical_index_2>'}, {'structure': '1.9', 'title': 'Beyond light and power, Edison held 1,093 U.S. patents.', 'physical_index': '<physical_index_3>'}, {'structure': '1.10', 'title': 'When asked the secret to his success, he said:', 'physical_index': '<physical_index_3>'}, {'structure': '1.11', 'title': 'In his later years, Edison became a national icon.', 'physical_index': '<physical_index_3>'}, {'structure': '1.12', 'title': 'He died on October 18, 1931, at age 84.', 'physical_index': '<physical_index_3>'}]",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:51:20.398000"
+  },
+  {
+    "message": "convert_physical_index_to_int: [{'structure': '1', 'title': 'The Light That Never Faded: A Story of Thomas Edison', 'physical_index': 1}, {'structure': '1.1', 'title': 'Young Tom didn’t learn like other children.', 'physical_index': 1}, {'structure': '1.2', 'title': 'By age ten, he had built his first laboratory in the basement.', 'physical_index': 1}, {'structure': '1.3', 'title': 'As a young man, Edison moved to Boston, then New York, working as a telegraph operator.', 'physical_index': 1}, {'structure': '1.4', 'title': 'But his true ambition lay elsewhere.', 'physical_index': 1}, {'structure': '1.5', 'title': 'He moved to Menlo Park, New Jersey, and built what the world would soon call “the invention factory”.', 'physical_index': 2}, {'structure': '1.6', 'title': 'Then, on October 21, 1879, everything changed.', 'physical_index': 2}, {'structure': '1.7', 'title': 'On December 31, 1879, Edison lit up Menlo Park.', 'physical_index': 2}, {'structure': '1.8', 'title': 'His success didn’t stop at the lightbulb.', 'physical_index': 2}, {'structure': '1.9', 'title': 'Beyond light and power, Edison held 1,093 U.S. patents.', 'physical_index': 3}, {'structure': '1.10', 'title': 'When asked the secret to his success, he said:', 'physical_index': 3}, {'structure': '1.11', 'title': 'In his later years, Edison became a national icon.', 'physical_index': 3}, {'structure': '1.12', 'title': 'He died on October 18, 1931, at age 84.', 'physical_index': 3}]",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:51:20.413000"
+  },
+  {
+    "message": "{'mode': 'process_toc_with_page_numbers', 'accuracy': 0.8461538461538461, 'incorrect_results': [{'list_index': 5, 'answer': 'no', 'title': 'He moved to Menlo Park, New Jersey, and built what the world would soon call “the invention factory”.', 'page_number': 2}, {'list_index': 9, 'answer': 'no', 'title': 'Beyond light and power, Edison held 1,093 U.S. patents.', 'page_number': 3}]}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:51:39.927000"
+  },
+  {
+    "message": "incorrect_results_and_range_logs: [{'list_index': 5, 'title': 'He moved to Menlo Park, New Jersey, and built what the world would soon call “the invention factory”.', 'prev_correct': 1, 'next_correct': 2}, {'list_index': 9, 'title': 'Beyond light and power, Edison held 1,093 U.S. patents.', 'prev_correct': 2, 'next_correct': 3}]",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:51:57.173000"
+  },
+  {
+    "message": "invalid_results: [{'list_index': 1, 'title': 'He moved to Menlo Park, New Jersey, and built what the world would soon call “the invention factory”.', 'physical_index': '<physical_index_1>'}, {'list_index': 2, 'title': 'Beyond light and power, Edison held 1,093 U.S. patents.', 'physical_index': '<physical_index_2>'}]",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:51:57.182000"
+  },
+  {
+    "message": "incorrect_results_and_range_logs: [{'list_index': 1, 'title': 'He moved to Menlo Park, New Jersey, and built what the world would soon call “the invention factory”.', 'prev_correct': 1, 'next_correct': 1}, {'list_index': 2, 'title': 'Beyond light and power, Edison held 1,093 U.S. patents.', 'prev_correct': 1, 'next_correct': 1}]",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:12.695000"
+  },
+  {
+    "message": "invalid_results: [{'list_index': 0, 'title': 'He moved to Menlo Park, New Jersey, and built what the world would soon call “the invention factory”.', 'physical_index': '<physical_index_1>'}, {'list_index': 0, 'title': 'Beyond light and power, Edison held 1,093 U.S. patents.', 'physical_index': '<physical_index_1>'}]",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:12.723000"
+  },
+  {
+    "message": "incorrect_results_and_range_logs: [{'list_index': 0, 'title': 'He moved to Menlo Park, New Jersey, and built what the world would soon call “the invention factory”.', 'prev_correct': 0, 'next_correct': 1}, {'list_index': 0, 'title': 'Beyond light and power, Edison held 1,093 U.S. patents.', 'prev_correct': 0, 'next_correct': 1}]",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:29.988000"
+  },
+  {
+    "message": "invalid_results: [{'list_index': 0, 'title': 'He moved to Menlo Park, New Jersey, and built what the world would soon call “the invention factory”.', 'physical_index': '<physical_index_1>'}, {'list_index': 0, 'title': 'Beyond light and power, Edison held 1,093 U.S. patents.', 'physical_index': '<physical_index_1>'}]",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:29.998000"
+  },
+  {
+    "message": "Maximum fix attempts reached",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:30.012000"
+  },
+  {
+    "message": "Checking title appearance in start concurrently",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:30.025000"
+  },
+  {
+    "message": "Response: {'thinking': \"The section title 'But his true ambition lay elsewhere.' appears in the page_text, but it is not at the beginning. The page_text starts with an introduction and a story about Thomas Edison before reaching the section title.\", 'start_begin': 'no'}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:39.202000"
+  },
+  {
+    "message": "Response: {'thinking': \"The section title 'Young Tom didn’t learn like other children.' appears in the page_text, but it is not at the beginning. The page_text starts with an introduction and a story title before mentioning the section title.\", 'start_begin': 'no'}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:39.329000"
+  },
+  {
+    "message": "Response: {'thinking': \"The section title 'The Light That Never Faded: A Story of Thomas Edison' appears in the page_text, but it is preceded by introductory content. Therefore, the section does not start at the beginning of the page_text.\", 'start_begin': 'no'}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:39.455000"
+  },
+  {
+    "message": "Response: {'thinking': \"The section title 'By age ten, he had built his first laboratory in the basement.' appears in the page_text, but it is not at the beginning. There is other content before the section title, including an introduction and earlier parts of the story.\", 'start_begin': 'no'}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:40.541000"
+  },
+  {
+    "message": "Response: {'thinking': \"The section title 'Then, on October 21, 1879, everything changed.' appears in the page_text, but it is not at the beginning. There is other content before the section title, such as details about Edison's research and experiments.\", 'start_begin': 'no'}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:40.651000"
+  },
+  {
+    "message": "Response: {'thinking': \"The section title 'As a young man, Edison moved to Boston, then New York, working as a telegraph operator.' appears in the page_text, but it is not at the beginning. The page_text starts with an introduction and a story about Thomas Edison's early life before mentioning the section title.\", 'start_begin': 'no'}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:41.847000"
+  },
+  {
+    "message": "Response: {'thinking': \"The section title 'On December 31, 1879, Edison lit up Menlo Park.' appears in the page_text, but it is not at the beginning. The page_text starts with other content about Edison's research lab and his work before mentioning the event on December 31, 1879.\", 'start_begin': 'no'}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:42.077000"
+  },
+  {
+    "message": "Response: {'thinking': \"The given section title 'He moved to Menlo Park, New Jersey, and built what the world would soon call “the invention factory”' does not appear at the beginning of the page_text. The page_text starts with 'factory” —the first industrial research lab.', which is not the same as the section title. Therefore, the section does not start at the beginning of the page_text.\", 'start_begin': 'no'}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:44.072000"
+  },
+  {
+    "message": "Response: {'thinking': \"The section title 'When asked the secret to his success, he said:' does not appear at the beginning of the page_text. There is content about Edison's inventions and work habits before the section title appears.\", 'start_begin': 'no'}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:46.923000"
+  },
+  {
+    "message": "Response: {'thinking': \"The section title 'His success didn’t stop at the lightbulb.' appears in the page_text, but it is not at the beginning. The page_text starts with content about Edison's industrial research lab and his work on the lightbulb before mentioning the section title.\", 'start_begin': 'no'}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:48.445000"
+  },
+  {
+    "message": "Response: {'thinking': \"The section title 'In his later years, Edison became a national icon.' appears in the page_text, but it is not at the beginning. There is other content before the section title, such as details about Edison's inventions and work habits.\", 'start_begin': 'no'}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:48.497000"
+  },
+  {
+    "message": "Response: {'thinking': \"The given section title 'Beyond light and power, Edison held 1,093 U.S. patents.' does not appear at the beginning of the page_text. The page_text starts with a description of Edison's inventions and achievements, but the specific section title is not present at the start.\", 'start_begin': 'no'}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:48.671000"
+  },
+  {
+    "message": "Response: {'thinking': \"The section title 'He died on October 18, 1931, at age 84.' appears in the page_text, but it is not at the beginning. There is significant content before the section title, including details about Edison's inventions, work ethic, and legacy.\", 'start_begin': 'no'}",
+    "level": "INFO",
+    "timestamp": "2025-12-25T09:52:49.207000"
+  }
+]
