@@ -5,8 +5,8 @@ import sys
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-API_KEY = "sk-fXM4W0CdcKnNp3NVDfF85f2b90284b11AfDdF9F5627f627b"
-URL = "https://aiplus.airchina.com.cn:18080/chat/completions"
+API_KEY = ""
+URL = ""
 MODEL_NAME = "DeepSeek-V3"
 
 def test_v3_diagnostic():
@@ -53,4 +53,5 @@ def test_v3_diagnostic():
         print(f"请求异常: {e}")
 
 if __name__ == "__main__":
+
     test_v3_diagnostic()
