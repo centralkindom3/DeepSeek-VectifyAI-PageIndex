@@ -7,9 +7,9 @@ import os
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # 2. 配置内网信息
-API_KEY = "sk-fXM4W0CdcKnNp3NVDfF85f2b90284b11AfDdF9F5627f627b"
+API_KEY = ""
 # 使用内网建议的完整路径
-URL = "https://aiplus.airchina.com.cn:18080/v1/chat/completions"
+URL = ""
 MODEL_NAME = "Qwen2.5-32B"
 
 def test_qwen_inner_network():
@@ -87,4 +87,5 @@ def test_qwen_inner_network():
         print(f"❌ 发生网络或代码异常: {e}")
 
 if __name__ == "__main__":
+
     test_qwen_inner_network()
