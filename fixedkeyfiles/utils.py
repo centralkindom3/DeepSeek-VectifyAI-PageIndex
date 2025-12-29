@@ -27,8 +27,8 @@ os.environ['HTTPS_PROXY'] = ''
 # 2. API Config
 load_dotenv()
 # Check environment variable first, fallback to hardcoded
-CHATGPT_API_KEY = os.getenv("CHATGPT_API_KEY", "YOUR API KEY")
-API_ENDPOINT = "https://www.QWEN.com:v1/chat/completions"
+CHATGPT_API_KEY = os.getenv("CHATGPT_API_KEY", "YOUR API KEY for DeepSeek-V3 only")
+API_ENDPOINT = "https://www.deepseek.com:v1/chat/completions"
 
 # --- Universal Fallback Object (Crash Preventer) ---
 class UniversalFallback(dict):
@@ -72,8 +72,8 @@ def request_api_stream_sync(model, messages, timeout=180):
     }
     
     urls_to_try = [
-        "https://WWW.QWEN.COM:18080/v1/chat/completions",
-        "https://WWW.QWEN.COM/chat/completions"
+        "https://WWW.deepseek.COM:18080/v1/chat/completions",
+        "https://WWW.deepseek.COM/chat/completions"
                 
     ]
 
