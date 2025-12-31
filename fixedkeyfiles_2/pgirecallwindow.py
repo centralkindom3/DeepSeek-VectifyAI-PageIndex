@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QLabel, QLineEdit, QPushButton, QTextEdit, QListWidget,
     QListWidgetItem, QFileDialog, QSplitter, QMessageBox,
-    QComboBox, QShortcut
+    QComboBox, QShortcut, QSlider
 )
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QTextCursor, QTextCharFormat, QColor
@@ -47,6 +47,9 @@ class PGIRecallWindow(QMainWindow):
         self.init_ui()
         self.apply_styles()
         self.setup_shortcuts()
+        
+        # 初始化字体大小 (触发滑块默认值)
+        self.change_font_size(self.slider_font.value())
 
     def init_ui(self):
         central_widget = QWidget()
@@ -114,8 +117,9 @@ class PGIRecallWindow(QMainWindow):
         # 标题与元信息区
         self.txt_header = QTextEdit()
         self.txt_header.setReadOnly(True)
-        self.txt_header.setMaximumHeight(120)
-        self.txt_header.setStyleSheet("border: none; background-color: #0d1117; font-size: 13px;")
+        self.txt_header.setMaximumHeight(150) # 稍微增高以适应大字体
+        # 注意：此处移除了硬编码的 font-size，改由滑块控制
+        self.txt_header.setStyleSheet("border: none; background-color: #0d1117;") 
         right_layout.addWidget(self.txt_header)
 
         # 正文内检索栏
@@ -146,7 +150,32 @@ class PGIRecallWindow(QMainWindow):
 
         layout.addWidget(splitter, 1)
 
+        # --- 底部：字体调节栏 ---
+        font_bar = QHBoxLayout()
+        font_bar.setContentsMargins(0, 5, 0, 0)
+        
+        lbl_font_icon = QLabel("🔠 字号调节:")
+        lbl_font_icon.setStyleSheet("color: #c9d1d9; font-weight: normal;")
+        
+        self.slider_font = QSlider(Qt.Horizontal)
+        self.slider_font.setRange(12, 40) # 设置字号范围
+        self.slider_font.setValue(30)     # 【修改点】默认字号设置为30 (约为原来的两倍)
+        self.slider_font.setFixedWidth(200)
+        self.slider_font.valueChanged.connect(self.change_font_size)
+        
+        self.lbl_font_val = QLabel("30px")
+        self.lbl_font_val.setStyleSheet("color: #58a6ff; font-weight: bold; min-width: 40px;")
+
+        font_bar.addStretch()
+        font_bar.addWidget(lbl_font_icon)
+        font_bar.addWidget(self.slider_font)
+        font_bar.addWidget(self.lbl_font_val)
+        
+        layout.addLayout(font_bar)
+
     def apply_styles(self):
+        # 注意：这里去掉了 QListWidget 和 QTextEdit 的 font-size，
+        # 以便让 Python 代码中的 stylesheet 动态覆盖生效。
         self.setStyleSheet("""
             QMainWindow { background-color: #0d1117; }
             QLabel { 
@@ -186,7 +215,6 @@ class PGIRecallWindow(QMainWindow):
                 border: 1px solid #30363d; 
                 border-radius: 6px;
                 color: #c9d1d9; 
-                font-size: 14px; 
                 padding: 5px;
             }
             QListWidget::item { padding: 8px; }
@@ -200,13 +228,70 @@ class PGIRecallWindow(QMainWindow):
                 border: 1px solid #30363d; 
                 border-radius: 6px;
                 color: #c9d1d9; 
-                font-size: 15px; 
                 line-height: 1.6; 
                 padding: 12px;
                 font-family: Consolas, 'Microsoft YaHei';
             }
             QSplitter::handle { background-color: #30363d; width: 6px; }
+            QSlider::groove:horizontal {
+                border: 1px solid #30363d;
+                height: 6px;
+                background: #161b22;
+                margin: 2px 0;
+                border-radius: 3px;
+            }
+            QSlider::handle:horizontal {
+                background: #58a6ff;
+                border: 1px solid #58a6ff;
+                width: 14px;
+                height: 14px;
+                margin: -5px 0;
+                border-radius: 7px;
+            }
         """)
+
+    def change_font_size(self, size):
+        """动态调整主要内容区域的字体大小"""
+        self.lbl_font_val.setText(f"{size}px")
+        
+        # 定义通用样式
+        base_style_list = f"""
+            QListWidget {{
+                background-color: #0d1117; 
+                border: 1px solid #30363d; 
+                border-radius: 6px;
+                color: #c9d1d9; 
+                padding: 5px;
+                font-size: {size}px;
+            }}
+        """
+        
+        base_style_text = f"""
+            QTextEdit {{
+                background-color: #0d1117; 
+                border: 1px solid #30363d; 
+                border-radius: 6px;
+                color: #c9d1d9; 
+                line-height: 1.6; 
+                padding: 12px;
+                font-family: Consolas, 'Microsoft YaHei';
+                font-size: {size}px;
+            }}
+        """
+
+        base_style_header = f"""
+            QTextEdit {{
+                border: none; 
+                background-color: #0d1117; 
+                font-size: {size}px;
+                font-family: Consolas, 'Microsoft YaHei';
+            }}
+        """
+
+        # 分别应用样式以避免冲突
+        self.list_results.setStyleSheet(base_style_list)
+        self.txt_detail.setStyleSheet(base_style_text)
+        self.txt_header.setStyleSheet(base_style_header)
 
     def setup_shortcuts(self):
         self.shortcut_find = QShortcut(QKeySequence("Ctrl+F"), self)
@@ -342,9 +427,11 @@ class PGIRecallWindow(QMainWindow):
         title = node.get('title', '未命名章节')
         summary = node.get('summary', '')
 
+        # 注意：这里移除了部分内联 font-size 样式，以便跟随容器大小，
+        # 或者仅使用相对大小，但为了保持原代码风格，保留了结构。
         header_html = f"""
         <h2 style='color: #58a6ff; margin: 0 0 10px 0;'>{html.escape(title)}</h2>
-        <div style='background-color: #21262d; padding: 10px; border-radius: 6px; font-size: 13px;'>
+        <div style='background-color: #21262d; padding: 10px; border-radius: 6px; font-size: 0.9em;'>
             <span style='color: #8b949e; font-weight: bold;'>📄 物理页码:</span> 
             <span style='color: #c9d1d9;'>第 {start} - {end} 页</span>
             &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
