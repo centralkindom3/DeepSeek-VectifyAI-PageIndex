@@ -37,7 +37,7 @@ for k in ['HTTP_PROXY', 'HTTPS_PROXY', 'http_proxy', 'https_proxy']:
 # 2. API Config
 load_dotenv()
 # 直接写入您提供的 API Key
-CHATGPT_API_KEY = "sk-d16851ac97ed487ca44cfbe19dd0232f"
+CHATGPT_API_KEY = "sk-3YOUR API KEY"
 DASHSCOPE_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 
 # --- Universal Fallback Object ---
