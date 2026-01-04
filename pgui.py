@@ -21,13 +21,7 @@ except ImportError:
 
 CONFIG_FILE = "gui_configs.json"
 
-# ==========================================
-# [后端逻辑脚本模板]
-# 修复说明：
-# 1. 将 API_KEY 和 BASE_URL 替换为 utils.py 中验证通过的局域网配置
-# 2. 增加 verify=False 以跳过 SSL 证书验证 (解决局域网 https 问题)
-# 3. 增加 urllib3 警告禁用，保持控制台清爽
-# ==========================================
+
 VECTOR_GEN_SCRIPT = r'''
 import sys
 import json
@@ -716,3 +710,4 @@ if __name__ == "__main__":
     main.show()
 
     sys.exit(app.exec_())
+
