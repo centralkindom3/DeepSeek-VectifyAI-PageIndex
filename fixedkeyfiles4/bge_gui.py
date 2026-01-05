@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, QH
                              QLabel, QLineEdit, QPushButton, QTextEdit, QFileDialog, QMessageBox, QProgressBar)
 from PyQt5.QtCore import QThread, pyqtSignal, QSettings, Qt
 
-# 禁用 HTTPS 警告（适配内网/Win7旧环境）
+# 禁用 HTTPS 警告（适配Win7旧环境）
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ================= 配置常量 =================
@@ -339,4 +339,5 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = VectorApp()
     window.show()
+
     sys.exit(app.exec_())
