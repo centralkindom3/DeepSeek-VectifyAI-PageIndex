@@ -3,3 +3,5 @@
 3. 3rd click bge_gui.py select 2nd's result of VECTOR JSON CLICK BGE EMBEDDING BUTTON
 4. 4th click RAG_recall_v6.py select vetor database(SQLite db file), click PageIndex select 1st built JSON from pgui.py
 ***prerequisity: update all of key files from latest fixedkeyfiles folders, rewrite your API KEY AND LLM ENDPOINT URL.
+for new features please also see: https://github.com/centralkindom3/DeepSeek-VectifyAI-PageIndex
+https://github.com/centralkindom3/DeepSeek-VectifyAI-PageIndex/commit/804f15a62b706efc5026f7ef98faf6613c8f0825
