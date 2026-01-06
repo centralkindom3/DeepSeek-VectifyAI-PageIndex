@@ -22,9 +22,12 @@ except ImportError:
 CONFIG_FILE = "gui_configs.json"
 
 # ==================================================================================
-# [后端逻辑脚本模板 - 2026-01-06 策略增强版]
-# Feature: 添加了 --strategy 参数，支持 "data", "text", "balanced" 三种模式
-# Fix: 针对 "JMU-PKX" 搜索失败问题，Data 模式下强制提取关键词到头部
+# [后端逻辑脚本模板 - 2026-01-06 零丢失最终版 + 视觉流修复]
+# 修复策略: "语义外壳 + 原始内核"
+# 1. [Fix Summary] 不再要求 LLM 重写数据，防止出现“例如...”导致的丢弃。
+# 2. [Fix Loss] 代码强制将 raw_content 拼接到 embedding_text 末尾，确保 JMU-PKX 物理存在。
+# 3. [Fix JSON] 增强了 JSON 提取的鲁棒性，处理 LLM 偶尔不返回标准 JSON 的情况。
+# 4. [Fix Visual] 恢复 DEBUG_AI_CHAR 输出，激活 Cyberpunk 视觉窗口文字流。
 # ==================================================================================
 VECTOR_GEN_SCRIPT = r'''
 import sys
@@ -43,89 +46,37 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 for k in ['HTTP_PROXY', 'HTTPS_PROXY', 'http_proxy', 'https_proxy']:
     os.environ.pop(k, None)
 
-# 2. API 配置 (内网配置)
-API_KEY = "YOUR API CODE"
+# 2. API 配置 (保持内网配置)
+API_KEY = "YOUR API KEY"
 BASE_URL = "https://www.deepseek.com:18080/v1" 
 
-# ================= STRATEGY-BASED PROMPTS =================
+# ================= PROMPTS (LOSSLESS STRATEGY) =================
+SYSTEM_PROMPT = """你是一个高精度的元数据分析师。你的任务是分析给定的文档片段，并生成一段简短的、富含上下文的“语义导语”。
 
-PROMPTS = {
-    # 策略 A: 数据密集型 (针对航班表、价目表)
-    # 核心目标: 绝对保留关键词，提取代码 (JMU, PKX)，不做缩写
-    "data": {
-        "system": """你是一个严格的数据索引专家。你的任务是为给定的表格或数据片段生成“检索索引头”。
-重要：不要试图总结大意，而是要提取出该片段中所有的【实体代码】、【地点】、【数值】和【日期】。
-如果原文包含 "JMU-PKX"，你的导语中必须明确包含 "JMU", "PKX", "JMU-PKX"。""",
-        "user_template": """请分析以下数据片段。
+【注意】
+你不需要重写原始数据，只需要生成“导语”。
+导语必须明确指出：这段内容属于哪个章节路径，包含什么类型的数据。"""
+
+USER_PROMPT_TEMPLATE = """请分析以下文档片段的元数据。
 
 【输入信息】
 - 文档标题：{doc_title}
 - 章节路径：{path_str}
-- 数据片段：
+- 数据片段长度：{length} 字符
+- 数据预览：
 {content_preview}
 
-【任务】
-1. 生成 `semantic_intro`：必须包含这段数据中出现的所有 机场三字码、城市名、航班号、具体价格或关键数值。
-2. 格式：严格的 JSON。
+【任务要求】
+1. 生成 `semantic_intro`：一段 50-100 字的描述，说明这段数据在文档中的位置（基于章节路径）以及它主要包含什么实体（如“包含从北京(PKX)出发的航班时刻表”）。
+2. **绝对不要** 列举具体数据（因为我会把原始数据拼接到后面），只需要描述数据的性质和范围。
+3. 输出为 JSON 格式。
 
 【JSON 结构】：
 {{
-  "semantic_intro": "数据包含以下实体: [列出代码, 如 PEK, SHA, JMU], 涉及 [列出城市], 时间范围 [日期]...",
-  "section_hint": "航班时刻表 / 价格表 / 统计数据"
+  "semantic_intro": "这是关于 [路径] 的详细数据表，包含...",
+  "section_hint": "航班时刻表 / 票价列表 / ..."
 }}
 """
-    },
-
-    # 策略 B: 文本语义型 (针对政策、公文)
-    # 核心目标: 总结意图，忽略废话，概括适用范围
-    "text": {
-        "system": """你是一个资深的政策分析师。你的任务是分析文档片段，生成“语义摘要”。
-请忽略文档中的格式噪音，专注于回答：这段文字规定了什么？适用于谁？核心逻辑是什么？""",
-        "user_template": """请分析以下文本片段。
-
-【输入信息】
-- 文档标题：{doc_title}
-- 章节路径：{path_str}
-- 文本预览：
-{content_preview}
-
-【任务】
-1. 生成 `semantic_intro`：用简练的语言概括这段文字的核心主旨、适用对象和执行动作。
-2. 格式：严格的 JSON。
-
-【JSON 结构】：
-{{
-  "semantic_intro": "本段规定了关于 [主题] 的执行标准，适用于 [对象]，主要要求是...",
-  "section_hint": "政策规范 / 法律条款 / 操作指南"
-}}
-"""
-    },
-
-    # 策略 C: 平衡模式 (默认)
-    # 核心目标: 简单的上下文补充
-    "balanced": {
-        "system": """你是一个元数据分析师。分析文档片段，生成简短的上下文导语。指出这段内容属于哪个章节，包含什么类型的数据即可。""",
-        "user_template": """请分析以下文档片段。
-
-【输入信息】
-- 文档标题：{doc_title}
-- 章节路径：{path_str}
-- 预览：
-{content_preview}
-
-【任务】
-1. 生成 `semantic_intro`：说明这段数据在文档中的位置以及主要包含什么实体。
-2. 输出为 JSON。
-
-【JSON 结构】：
-{{
-  "semantic_intro": "这是关于 [路径] 的详细内容，包含...",
-  "section_hint": "通用数据"
-}}
-"""
-    }
-}
-
 # ======================================================
 
 def log(msg, level="INFO"):
@@ -145,6 +96,7 @@ def recursive_walk(nodes, path=[], depth=1):
 
 def extract_json_robust(content):
     if not content: return None
+    # 尝试多种正则匹配
     patterns = [
         r'```json\s*([\s\S]*?)\s*```',
         r'```\s*([\s\S]*?)\s*```',
@@ -160,6 +112,7 @@ def extract_json_robust(content):
     if not json_str: 
         json_str = content
 
+    # 清理常见的 JSON 错误
     json_str = re.sub(r',\s*([\]}])', r'\1', json_str) # 去掉尾部逗号
     
     try:
@@ -203,6 +156,8 @@ def call_llm_api(system_prompt, user_prompt, model_name):
                             content = chunk["choices"][0]["delta"].get("content", "")
                             if content:
                                 full_content += content
+                                # [FIX] 恢复视觉窗口的流式输出
+                                print(f"DEBUG_AI_CHAR:{content}", flush=True) 
                     except: pass
         return full_content
     except Exception as e:
@@ -214,15 +169,9 @@ def main():
     parser.add_argument("--input", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--model", required=True)
-    parser.add_argument("--strategy", default="balanced", help="data, text, or balanced")
     args = parser.parse_args()
 
-    log(f"Starting Vector Generation. Strategy: {args.strategy.upper()}", "INFO")
-    
-    # 获取对应策略的 Prompt
-    strategy_key = args.strategy if args.strategy in PROMPTS else "balanced"
-    current_prompts = PROMPTS[strategy_key]
-    
+    log(f"Starting Lossless Vector Generation...", "INFO")
     if not os.path.exists(args.input):
         log(f"Input file not found: {args.input}", "ERROR")
         return
@@ -249,68 +198,72 @@ def main():
             content = node.get("text", node.get("content", ""))
             node_id = node.get("node_id", f"{processed_count:04d}")
             
-            # 过滤逻辑
+            # 1. 过滤逻辑：只保留有实际内容的节点，或者有子节点的容器节点
             has_children = "nodes" in node and isinstance(node["nodes"], list) and len(node["nodes"]) > 0
-            if (not content or len(content.strip()) < 5) and not has_children:
+            if (not content or len(content.strip()) < 10) and not has_children:
                 continue
             
-            # 准备 Prompt
+            # 2. 准备 Prompt
             path_str = " > ".join(path)
-            content_preview = content[:1500] + "..." if len(content) > 1500 else content
+            content_preview = content[:1000] + "..." if len(content) > 1000 else content
             
-            prompt = current_prompts["user_template"].format(
+            prompt = USER_PROMPT_TEMPLATE.format(
                 doc_title=doc_title,
                 path_str=path_str,
+                length=len(content),
                 content_preview=content_preview
             )
             
-            log(f"Processing Node {node_id} ({args.strategy}): {path[-1][:30]}...", "INFO")
+            log(f"Processing Node {node_id}: {path[-1][:30]}...", "INFO")
             
-            # 调用 LLM
-            response_text = call_llm_api(current_prompts["system"], prompt, args.model)
+            # 3. 调用 LLM 生成元数据（只生成导语，不生成全文）
+            response_text = call_llm_api(SYSTEM_PROMPT, prompt, args.model)
             
-            # 解析
+            # 4. 解析结果
             vector_obj = extract_json_robust(response_text)
             if not vector_obj:
+                # Fallback: 如果解析失败，手动构建简单的对象
                 vector_obj = {
-                    "semantic_intro": f"文档 {doc_title} 章节 {path_str} 的数据。",
-                    "section_hint": "General"
+                    "semantic_intro": f"这是文档 {doc_title} 中章节 {path_str} 的数据内容。",
+                    "section_hint": "数据片段"
                 }
+                log(f"JSON Parse Failed for {node_id}, using fallback.", "WARN")
 
-            # [核心构建] 无论什么策略，必须拼接原始数据
+            # 5. [核心修复] 构造最终的 embedding_text
+            # 格式：[语义导语] + [换行] + [原始数据]
+            # 这样保证了 100% 的数据召回率
             semantic_intro = vector_obj.get("semantic_intro", "")
             raw_data_block = content.strip()
             
-            # 组合 Text for Embedding
-            # 这里的结构很关键：导语在最前（为了语义匹配），原文在最后（为了精确匹配）
+            # 如果是容器节点（没内容但有子节点），我们不需要拼 raw_content，只需要导语
             if not raw_data_block and has_children:
-                 final_text = f"{semantic_intro}\n(Parent Node - Contains Subsections)"
+                 final_text = f"{semantic_intro}\n(包含子章节数据)"
             else:
-                 final_text = f"【内容索引】: {semantic_intro}\n\n【原始文档内容】:\n{raw_data_block}"
+                 final_text = f"{semantic_intro}\n\n【原始数据内容】:\n{raw_data_block}"
 
+            # 6. 组装最终 JSON 对象
             final_item = {
-                "embedding_text": final_text,
+                "embedding_text": final_text, # 包含 raw content
                 "section_hint": vector_obj.get("section_hint", "General"),
                 "metadata": {
                     "doc_title": doc_title,
                     "section_id": node_id,
                     "section_path": path,
                     "depth": depth,
-                    "original_length": len(content),
-                    "strategy": args.strategy
+                    "original_length": len(content)
                 },
                 "original_snippet": content[:500] 
             }
 
             output_data.append(final_item)
             processed_count += 1
-            # 稍微快一点，Data模式通常token少
-            time.sleep(0.05) 
+            time.sleep(0.1)
 
         with open(args.output, 'w', encoding='utf-8') as f:
             json.dump(output_data, f, indent=2, ensure_ascii=False)
 
-        log(f"Job Done. Total: {processed_count} blocks processed.", "SUCCESS")
+        log(f"Generation Complete! Total: {processed_count}", "SUCCESS")
+        log(f"Output: {args.output}", "SUCCESS")
 
     except Exception as e:
         log(f"Critical Error: {str(e)}", "ERROR")
@@ -616,8 +569,8 @@ class MainWindow(QMainWindow):
         layout.setSpacing(15)
         layout.setContentsMargins(20, 20, 20, 20)
         
-        desc = QLabel("Transform PageIndex JSON into RAG-ready vector datasets. Select strategy based on content type.")
-        desc.setStyleSheet("color: #8b949e; font-style: italic;")
+        desc = QLabel("Transform PageIndex JSON structures into RAG-ready vector datasets using Semantic Summarization.")
+        desc.setStyleSheet("color: #8b949e; font-style: italic; font-weight: normal;")
         layout.addWidget(desc)
 
         # 1. Input JSON Selection
@@ -651,34 +604,19 @@ class MainWindow(QMainWindow):
         
         self.edit_json_path.textChanged.connect(self.update_export_path)
 
-        # 3. Model & Strategy Options
+        # 3. Model & Options
         opts_layout = QHBoxLayout()
-        
-        # Model Selector
         self.combo_vector_model = QComboBox()
         self.combo_vector_model.addItems(AVAILABLE_MODELS)
         
-        # Strategy Selector (NEW FEATURE)
-        self.combo_strategy = QComboBox()
-        # Item Text -> (Internal Key)
-        self.strategy_map = {
-            "Balanced (Default)": "balanced",
-            "Data-Centric (Tables/Codes/JMU)": "data",
-            "Text-Centric (Policies/Summaries)": "text"
-        }
-        self.combo_strategy.addItems(self.strategy_map.keys())
-        
-        opts_layout.addWidget(QLabel("MODEL:"))
+        opts_layout.addWidget(QLabel("SUMMARIZER MODEL:"))
         opts_layout.addWidget(self.combo_vector_model, 1)
-        opts_layout.addWidget(QLabel("STRATEGY:"))
-        opts_layout.addWidget(self.combo_strategy, 1)
-        
         layout.addLayout(opts_layout)
 
         # 4. Action Button
         self.btn_gen_vector = QPushButton("⚡ GENERATE VECTOR JSON")
         self.btn_gen_vector.setFixedHeight(50)
-        self.btn_gen_vector.setStyleSheet("background-color: #79c0ff; color: #0d1117; font-size: 15px; font-weight: bold;")
+        self.btn_gen_vector.setStyleSheet("background-color: #79c0ff; color: #0d1117; font-size: 15px;")
         self.btn_gen_vector.clicked.connect(self.start_vector_task)
         
         layout.addStretch()
@@ -779,11 +717,11 @@ class MainWindow(QMainWindow):
     def ensure_vector_script_exists(self):
         """确保 run_vector_gen.py 存在，如果不存在则写入更新后的内容"""
         script_name = "run_vector_gen.py"
+        # 强制覆盖旧脚本，确保逻辑是最新的
         try:
-            # 始终覆盖，确保策略逻辑生效
             with open(script_name, "w", encoding="utf-8") as f:
                 f.write(VECTOR_GEN_SCRIPT)
-            self.append_log(f"<span style='color:#33CCFF'>[INFO] Backend script updated (Strategy Support enabled): {script_name}</span>")
+            self.append_log(f"<span style='color:#33CCFF'>[INFO] Generated/Updated backend script: {script_name}</span>")
             return True
         except Exception as e:
             self.append_log(f"<span style='color:#FF3333'>[ERROR] Failed to generate script: {e}</span>")
@@ -794,10 +732,6 @@ class MainWindow(QMainWindow):
         out_path = self.edit_export_path.text()
         model = self.combo_vector_model.currentText()
         
-        # 获取策略
-        strategy_text = self.combo_strategy.currentText()
-        strategy_key = self.strategy_map.get(strategy_text, "balanced")
-        
         if not in_path or not os.path.exists(in_path):
              QMessageBox.warning(self, "Error", "Invalid Input JSON path.")
              return
@@ -806,21 +740,20 @@ class MainWindow(QMainWindow):
             self.update_export_path(in_path)
             out_path = self.edit_export_path.text()
 
-        # 1. 确保后端脚本是最新的
+        # 1. 确保后端脚本存在 (且被更新为内网配置版)
         if not self.ensure_vector_script_exists():
             return
 
-        self.txt_console.append(f"<br><span style='color:#79c0ff; font-weight:bold;'>[VECTOR JOB] Initializing Vector Gen...</span>")
-        self.txt_console.append(f"<span style='color:#8b949e;'>Mode: {strategy_text} (Key: {strategy_key})</span>")
+        self.txt_console.append(f"<br><span style='color:#79c0ff; font-weight:bold;'>[VECTOR JOB] Initializing Vector Transformation Subprocess...</span>")
         
-        # 2. 构造 subprocess 命令 (传递 strategy 参数)
+        # 2. 构造 subprocess 命令 (模仿 pguiback.py)
         py_exe = sys.executable
-        cmd = f'"{py_exe}" -u run_vector_gen.py --input "{in_path}" --output "{out_path}" --model "{model}" --strategy "{strategy_key}"'
+        cmd = f'"{py_exe}" -u run_vector_gen.py --input "{in_path}" --output "{out_path}" --model "{model}"'
         
         # 3. 使用 WorkerThread 执行
         self.vector_worker = WorkerThread(cmd)
         self.vector_worker.log_signal.connect(self.append_log)
-        self.vector_worker.stream_signal.connect(self.visual_window.add_stream_char) 
+        self.vector_worker.stream_signal.connect(self.visual_window.add_stream_char) # 开启可视化
         
         if not self.btn_visual.isChecked():
             self.btn_visual.click()
