@@ -22,12 +22,11 @@ except ImportError:
 CONFIG_FILE = "gui_configs.json"
 
 # ==================================================================================
-# [后端逻辑脚本模板 - 2026-01-06 零丢失最终版 + 视觉流修复]
+# [后端逻辑脚本模板 - 2026-01-06 零丢失最终版]
 # 修复策略: "语义外壳 + 原始内核"
 # 1. [Fix Summary] 不再要求 LLM 重写数据，防止出现“例如...”导致的丢弃。
 # 2. [Fix Loss] 代码强制将 raw_content 拼接到 embedding_text 末尾，确保 JMU-PKX 物理存在。
 # 3. [Fix JSON] 增强了 JSON 提取的鲁棒性，处理 LLM 偶尔不返回标准 JSON 的情况。
-# 4. [Fix Visual] 恢复 DEBUG_AI_CHAR 输出，激活 Cyberpunk 视觉窗口文字流。
 # ==================================================================================
 VECTOR_GEN_SCRIPT = r'''
 import sys
@@ -156,8 +155,7 @@ def call_llm_api(system_prompt, user_prompt, model_name):
                             content = chunk["choices"][0]["delta"].get("content", "")
                             if content:
                                 full_content += content
-                                # [FIX] 恢复视觉窗口的流式输出
-                                print(f"DEBUG_AI_CHAR:{content}", flush=True) 
+                                # print(f"DEBUG_AI_CHAR:{content}", flush=True) # 减少日志输出，防止卡顿
                     except: pass
         return full_content
     except Exception as e:
