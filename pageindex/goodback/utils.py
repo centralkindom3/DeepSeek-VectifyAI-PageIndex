@@ -27,8 +27,8 @@ os.environ['HTTPS_PROXY'] = ''
 # 2. API Config
 load_dotenv()
 # Check environment variable first, fallback to hardcoded
-CHATGPT_API_KEY = os.getenv("CHATGPT_API_KEY", "sk-fXM4W0CdcKnNp3NVDfF85f2b90284b11AfDdF9F5627f627b")
-API_ENDPOINT = "https://aiplus.airchina.com.cn:18080/v1/chat/completions"
+CHATGPT_API_KEY = os.getenv("CHATGPT_API_KEY", "YOUR API KEY")
+API_ENDPOINT = "https://WWW.DEEPSEEK.COM:18080/v1/chat/completions"
 
 # --- Universal Fallback Object (Crash Preventer) ---
 class UniversalFallback(dict):
