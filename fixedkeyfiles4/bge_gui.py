@@ -10,13 +10,13 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, QH
                              QLabel, QLineEdit, QPushButton, QTextEdit, QFileDialog, QMessageBox, QProgressBar)
 from PyQt5.QtCore import QThread, pyqtSignal, QSettings, Qt
 
-# 禁用 HTTPS 警告（适配Win7旧环境）
+# 禁用 HTTPS 警告（适配内网/Win7旧环境）
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ================= 配置常量 =================
 # API 配置 (根据提供的代码写死)
 API_URL = "https://www.bge.com/v1/embeddings" # 注意：BGE是embedding模型，通常端点是 /embeddings 而不是 chat/completions
-API_KEY = "your api key"
+API_KEY = "YOUR API KEY"
 MODEL_NAME = "bge-m3"
 BATCH_SIZE = 8  # 批处理大小，避免一次请求过大
 
@@ -339,5 +339,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = VectorApp()
     window.show()
-
     sys.exit(app.exec_())
